@@ -8,7 +8,7 @@ def emoDi(prevAngle, json):
         return None
     else:
         emos = json[0]["faceAttributes"]["emotion"]
-        happy, neutral, sad = emos["happiness"], emos["neutral"], emos["sadness"]
+        happy, neutral, sad = emos["happiness"], emos["sadness"]
         newAngle = (prevAngle + (happy - sad)) % (2*m.pi)
         return newAngle
 
