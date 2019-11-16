@@ -13,13 +13,13 @@ def emoDi(prevAngle, json):
         return newAngle
 
 
-with open ("example.txt") as file:
+"""with open ("example.txt") as file:
     data = j.load(file)
 angle = 0
 while True:
     angle = emoDi(angle, data)
     print(angle)
-    #data = new pic
+    #data = new pic"""
 
 
     
