@@ -9,34 +9,45 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
 
+	<style>
+	#videoElement {
+		/*Mirror code starts*/
+		transform: rotateY(180deg);
+		-webkit-transform:rotateY(180deg); /* Safari and Chrome */
+		-moz-transform:rotateY(180deg); /* Firefox */
+		/*Mirror code ends*/
+	}
+
+</style>
+
     <body>
 		<header>
 			<a href="index.html" id = "logo">
 				<h1> Control your snaaaaake!!!</h1>
 			</a>
     </header>
-        <div id="slither">
-        <iframe src="https://slither.io"></iframe>
-        </div>
-        <div id="webcam">
-			<video autoplay="true" id="videoElement" width = 200px></video>
-
-			<script>
-			var video = document.querySelector("#videoElement");
-			if (navigator.mediaDevices.getUserMedia) {
-				navigator.mediaDevices.getUserMedia({ video: true })
-				.then(function (stream) {
-					video.srcObject = stream;
-				})
-				.catch(function (err0r) {
-					console.log("Something went wrong!");
-				});
-			}
-			</script>
-			<footer>
-				<a href="https://github.com/Evanev7/OxHack19"><img src="img/gitlogo.png" alt="VKontavte logo." class="social-icon"></a>
-			</footer>
-        </div>
+	
+			<div style="width: 600px; display: table-cell;">
+				<iframe src="https://slither.io" width = 1200px height = 600px style="display: table;"></iframe>
+			</div>
+			<div style="display: table-cell;"> 
+				<video autoplay="true" id="videoElement" width = 300px></video>
+				<script>
+					var video = document.querySelector("#videoElement");
+					if (navigator.mediaDevices.getUserMedia) {
+						navigator.mediaDevices.getUserMedia({ video: true })
+						.then(function (stream) {
+							video.srcObject = stream;
+						})
+						.catch(function (err0r) {
+							console.log("Something went wrong!");
+						});
+					}
+				</script>
+			</div>
+        <footer>
+					<a href="https://github.com/Evanev7/OxHack19"><img src="img/gitlogo.png" alt="VKontavte logo." class="social-icon"></a>
+		</footer>
 		<footer>&copy; 2019 OxHack Team KCLMS</footer>
     </body>
 </html>
