@@ -76,8 +76,8 @@ while True:
     
     try:
         faces = face_client.face.detect_with_stream(image, return_face_attributes=['emotion'])
-    except APIErrorException:
-        pass
+    except Exception as e:
+        print(e)
     print(angle)
 
     angle = emoDi(angle, faces)
