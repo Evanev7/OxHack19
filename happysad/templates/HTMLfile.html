@@ -26,7 +26,8 @@
 				<h1> Control your snaaaaake!!!</h1>
 			</a>
     </header>
-	
+	<button id="init">Initialize!</button>
+
 			<div style="width: 600px; display: table-cell;">
 				<iframe src="https://slither.io" width = 1200px height = 600px style="display: table;"></iframe>
 			</div>
@@ -43,6 +44,35 @@
 							console.log("Something went wrong!");
 						});
 					}
+
+
+
+
+
+
+
+
+
+
+
+					document.getElementById('init').addEventListener('click', function() {
+
+					const getResult = async () => {
+						await fetch('loop', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' }
+						})
+
+						
+					}
+					getResult()
+					});
+
+
+
+
+
+
 				</script>
 			</div>
         <footer>

@@ -75,7 +75,8 @@ def loop():
         faces = face_client.face.detect_with_stream(image,
                                                     return_face_attributes=['emotion'])
 
-        angle = emoDi(angle, faces[0])
+        #angle = emoDi(angle, faces[0])
+        angle += 1/50
         dx,dy = (200*np.cos(angle),200*np.sin(angle))
         win32api.SetCursorPos((int(x+dx),int(y+dy)))
         sleep(0.005)
