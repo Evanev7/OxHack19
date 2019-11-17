@@ -2,6 +2,10 @@ import random, os, io, base64
 from flask import Flask, render_template, request, jsonify
 from azure.cognitiveservices.vision.face import FaceClient
 from msrest.authentication import CognitiveServicesCredentials
+import win32api
+from time import sleep
+import numpy as np
+import json as j
 
 #credentials = CognitiveServicesCredentials(os.environ['face_api_key'])
 #face_client = FaceClient(os.environ['face_api_endpoint'], credentials=credentials)
@@ -28,11 +32,50 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    page_data = {
-        'emotion' : random.choice(emotions)
-    }
-    return render_template('home.html', page_data = page_data)
 
+    return render_template('HTMLfile.html')
+
+
+
+
+
+
+def emoDi(prevAngle, json):
+    if len(json) == 0:
+        return None
+    else:
+        emos = json[0]["faceAttributes"]["emotion"]
+        happy, sad = emos["happiness"], emos["sadness"]
+        newAngle = (prevAngle + (happy - sad)/30)
+        return newAngle
+
+angle = 0
+x, y = win32api.GetCursorPos()    
+
+
+def loop():
+
+    while True:
+        body = request.get_json()
+
+        image_bytes = base64.b64decode(body['image_base64'].split(',')[1])
+        image = io.BytesIO(image_bytes)
+
+        faces = face_client.face.detect_with_stream(image,
+                                                    return_face_attributes=['emotion'])
+
+        angle = emoDi(angle, faces[0])
+        dx,dy = (200*np.cos(angle),200*np.sin(angle))
+        win32api.SetCursorPos((int(x+dx),int(y+dy)))
+        sleep(0.005)
+        x,y = win32api.GetCursorPos()
+        x -= dx -(x+dx)%1
+        y -= dy -(y+dy)%1
+        if (win32api.GetAsyncKeyState(27)) != 0:
+            break
+
+
+'''
 @app.route('/result', methods=['POST'])
 def check_results():
     body = request.get_json()
@@ -62,3 +105,4 @@ def check_results():
         return jsonify({
             'message': '☠️ ERROR: No faces detected'
         })
+'''
