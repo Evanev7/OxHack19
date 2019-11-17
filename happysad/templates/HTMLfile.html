@@ -3,9 +3,9 @@
     <head>
 		<meta charset="utf-8">
         <title>Happy, Sad, Angry</title>
-        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename = 'css/normalize.css') }}">
 		<link href='http://fonts.googleapis.com/css?family=Raleway:400,700,900|Montserrat:400,700' rel='stylesheet' type='text/css'>
-		<link rel="stylesheet" href="css/main.css">
+		<link rel="stylesheet" href="{{ url_for('static', filename = 'css/main.css') }}">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
 
@@ -26,57 +26,48 @@
 				<h1> Control your snaaaaake!!!</h1>
 			</a>
     </header>
-	<button id="init">Initialize!</button>
-
+			
 			<div style="width: 600px; display: table-cell;">
 				<iframe src="https://slither.io" width = 1200px height = 600px style="display: table;"></iframe>
 			</div>
 			<div style="display: table-cell;"> 
 				<video autoplay="true" id="videoElement" width = 300px></video>
 				<script>
+					window.addEventListener("DOMContentLoaded", updateCursorPosition)
 					var video = document.querySelector("#videoElement");
 					if (navigator.mediaDevices.getUserMedia) {
-						navigator.mediaDevices.getUserMedia({ video: true })
-						.then(function (stream) {
-							video.srcObject = stream;
-						})
-						.catch(function (err0r) {
-							console.log("Something went wrong!");
-						});
+						const getImage = async () => {
+							video.srcObject = await navigator.mediaDevices.getUserMedia({ video: true })
+							video.play();
+						}
+						getImage();
 					}
-
-
-
-
-
-
-
-
-
-
-
-					document.getElementById('init').addEventListener('click', function() {
-
-					const getResult = async () => {
-						await fetch('loop', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' }
-						})
-
-						
+					
+					function updateCursorPosition() {
+						var canvas = document.createElement('canvas');
+						canvas.width = 300;
+						canvas.height = 225;
+						var context = canvas.getContext('2d');
+						context.drawImage(video, 0, 0, canvas.width, canvas.height);
+						var data = {'image_base64': canvas.toDataURL("image/png")}
+						const getResult = async () => {
+							var result = await fetch('loop', {
+								method: 'POST',
+								body: JSON.stringify(data),
+						    headers: { 'Content-Type': 'application/json' }
+							})
+						var jsonResult = await result.json()
+						document.getElementById("fun").innerHTML = jsonResult.fun*2;						
+						}
+						getResult()		
+						setTimeout(updateCursorPosition, 50)
 					}
-					getResult()
-					});
-
-
-
-
-
 
 				</script>
 			</div>
+			<div id = "fun"></div>
         <footer>
-					<a href="https://github.com/Evanev7/OxHack19"><img src="img/gitlogo.png" alt="VKontavte logo." class="social-icon"></a>
+					<a href="https://github.com/Evanev7/OxHack19"><img src="{{ url_for('static', filename = 'img/gitlogo.png') }}" alt="VKontavte logo." class="social-icon"></a>
 		</footer>
 		<footer>&copy; 2019 OxHack Team KCLMS</footer>
     </body>

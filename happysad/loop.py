@@ -41,10 +41,9 @@ def emoDi(prevAngle, json):
     else:
         emos = json[0].face_attributes.emotion
         happy, sad = emos.happiness, emos.sadness
-        newAngle = (prevAngle + (happy - sad)/6)
-        return newAngle, (happy-sad)/2
+        newAngle = (prevAngle + (happy - sad)/2)
+        return newAngle
 
-global angle, x, y
 angle = 0  
 x,y = win32api.GetCursorPos()
 
@@ -58,23 +57,32 @@ def square():
 	return data
 '''
 
-@app.route('/loop', methods=['POST'])
+@app.route('/loop',methods=['POST'])
 def loop():
-    global angle, x, y
     body = request.get_json()
+    #retval, image = cap.read()
+    #retval, buffer = cv2.imencode('.jpg', image)
+    #image_bytes = base64.b64encode(buffer)
+
     image_bytes = base64.b64decode(body['image_base64'].split(',')[1])
-    image = io.BytesIO(image_bytes)
-    faces = face_client.face.detect_with_stream(image, return_face_attributes=['emotion'])
+    image = io.BytesIO(buffer)
+    
+    try:
+        faces = face_client.face.detect_with_stream(image, return_face_attributes=['emotion'])
+    except Exception as e:
+        print(e)
+    print(angle)
 
-
-    angle,fun = emoDi(angle, faces)
+    angle = emoDi(angle, faces)
     #angle += 1/50
     dx,dy = (200*np.cos(angle),200*np.sin(angle))
     win32api.SetCursorPos((int(x+dx),int(y+dy)))
     x,y = win32api.GetCursorPos()
     x -= dx -(x+dx)%1
     y -= dy -(y+dy)%1
-    return jsonify({"fun": fun})
+    if (win32api.GetAsyncKeyState(27)) != 0:
+        cap.release()
+        break
 
 '''
 @app.route('/result', methods=['POST'])
