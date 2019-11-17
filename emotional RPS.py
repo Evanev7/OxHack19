@@ -22,7 +22,7 @@ def choice(face):
 cap = cv2.VideoCapture(0)
 faces = []
 print("Emotional Rock Paper Scissors: ")
-
+1
 for i in range(3):
     Beep(440,500)
     sleep(0.5)
