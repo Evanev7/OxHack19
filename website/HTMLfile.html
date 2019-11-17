@@ -18,9 +18,7 @@
 		/*Mirror code ends*/
 	}
 
-	</style>
-	
-	
+</style>
 
     <body>
 		<header>
@@ -28,24 +26,28 @@
 				<h1> Control your snaaaaake!!!</h1>
 			</a>
     </header>
-		<div id="container">
-			<div id = "navi">
-				<iframe src="https://slither.io" width = 1200px height = 600px style="display: table;"></iframe>
-			</div>
-			<div id = "infoi"> 
-				<video autoplay="true" id="videoElement" width = 300px></video>
-				<script>
-					var video = document.querySelector("#videoElement");
-					if (navigator.mediaDevices.getUserMedia) {
-						navigator.mediaDevices.getUserMedia({ video: true })
-						.then(function (stream) {
-							video.srcObject = stream;
-						})
-						.catch(function (err0r) {
-							console.log("Something went wrong!");
-						});
-					}
-				</script>
+	
+		<div style="width: 100%; display: table;">
+			<div style="display: table-row">
+				<div style="width: 600px; display: table-cell;">
+					<iframe src="https://slither.io" width = 1200px height = 600px style="display: table;"></iframe>
+				</div>
+				<div style="display: table-cell;"> 
+					<video autoplay="true" id="videoElement" width = 300px></video>
+
+					<script>
+						var video = document.querySelector("#videoElement");
+						if (navigator.mediaDevices.getUserMedia) {
+							navigator.mediaDevices.getUserMedia({ video: true })
+							.then(function (stream) {
+								video.srcObject = stream;
+							})
+							.catch(function (err0r) {
+								console.log("Something went wrong!");
+							});
+						}
+					</script>
+				</div>
 			</div>
 		</div>
         <footer>
