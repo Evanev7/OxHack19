@@ -1,5 +1,5 @@
 import random, os, io, base64
-from flask import Flask, render_template, request, jsonify
+#from flask import Flask, render_template, request, jsonify
 from azure.cognitiveservices.vision.face import FaceClient
 from msrest.authentication import CognitiveServicesCredentials
 import win32api
@@ -28,14 +28,14 @@ def best_emotion(emotion):
     return max(zip(emotions.values(), emotions.keys()))[1]
 
 
-app = Flask(__name__)
-
+#app = Flask(__name__)
+'''
 @app.route('/')
 def home():
 
 
     return render_template('HTMLfile.html')
-
+'''
 
 
 
@@ -63,9 +63,9 @@ def square():
 	return data
 '''
 
-@app.route('/loop',methods=['POST'])
+#@app.route('/loop',methods=['POST'])
 def loop():
-
+    sleep(10)
     while True:
         body = request.get_json()
 
@@ -75,8 +75,8 @@ def loop():
         faces = face_client.face.detect_with_stream(image,
                                                     return_face_attributes=['emotion'])
 
-        #angle = emoDi(angle, faces[0])
-        angle += 1/50
+        angle = emoDi(angle, faces)
+        #angle += 1/50
         dx,dy = (200*np.cos(angle),200*np.sin(angle))
         win32api.SetCursorPos((int(x+dx),int(y+dy)))
         sleep(0.005)
@@ -86,7 +86,7 @@ def loop():
         if (win32api.GetAsyncKeyState(27)) != 0:
             break
 
-
+loop()
 '''
 @app.route('/result', methods=['POST'])
 def check_results():
