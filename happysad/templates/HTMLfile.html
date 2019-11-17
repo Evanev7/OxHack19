@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Happy, Sad, Angry</title>
+        <style>
+            body {
+            background-color: powderblue;
+            }
+            h1 {
+                text-align: cente;
+                color: red;
+            }
+            #slither{
+                width: 100px;
+                height: 100px;
+                position: relative;
+            }
+            #webcam{
+                position: absolute;
+                width: 1px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Control your snaaaaake!!!</h1>
+        <div id="slither">
+        <iframe src="https://slither.io"></iframe>
+        </div>
+        <div id="webcam">
+        <video autoplay="true" id="videoElement" width = 200px></video>
+
+        <script>
+        var video = document.querySelector("#videoElement");
+        if (navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function (stream) {
+                video.srcObject = stream;
+            })
+            .catch(function (err0r) {
+                console.log("Something went wrong!");
+            });
+        }
+        </script>
+        </div>
+    </body>
+</html>
