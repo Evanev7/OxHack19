@@ -13,12 +13,12 @@ def emoDi(prevAngle, faceData):
         return prevAngle
     else:
         emos = faceData[0].face_attributes.emotion
-        happy, sad = emos.happiness, emos.sadness
+        happy, sad = emos.happiness, emos.surprise
         newAngle = (prevAngle + (happy - sad)/2)
         return newAngle
 
 angle = 0  
-x,y = win32api.GetCursorPos()
+x,y = 680, 540
 cap = cv2.VideoCapture(0)
 
 while True:
@@ -34,9 +34,6 @@ while True:
     angle = emoDi(angle, faces)
     dx,dy = (200*np.cos(angle),200*np.sin(angle))
     win32api.SetCursorPos((int(x+dx),int(y+dy)))
-    x,y = win32api.GetCursorPos()
-    x -= dx -(x+dx)%1
-    y -= dy -(y+dy)%1
     if (win32api.GetAsyncKeyState(27)) != 0:
         cap.release()
         break
