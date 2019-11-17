@@ -6,9 +6,8 @@ import win32api
 from time import sleep
 import numpy as np
 import json as j
+import cv2
 
-#credentials = CognitiveServicesCredentials(os.environ['face_api_key'])
-#face_client = FaceClient(os.environ['face_api_endpoint'], credentials=credentials)
 credentials = CognitiveServicesCredentials("c8c8240e711641f5b157b8eb37d6c908")
 face_client = FaceClient("https://westeurope.api.cognitive.microsoft.com/", credentials=credentials)
 
@@ -39,19 +38,20 @@ def home():
 
 
 
+cap = cv2.VideoCapture(0)
 
 
 def emoDi(prevAngle, json):
     if len(json) == 0:
-        return None
+        return prevAngle
     else:
-        emos = json[0]["faceAttributes"]["emotion"]
-        happy, sad = emos["happiness"], emos["sadness"]
-        newAngle = (prevAngle + (happy - sad)/30)
+        emos = json[0].face_attributes.emotion
+        happy, sad = emos.happiness, emos.sadness
+        newAngle = (prevAngle + (happy - sad)/2)
         return newAngle
 
-angle = 0
-x, y = win32api.GetCursorPos()    
+angle = 0  
+x,y = win32api.GetCursorPos()
 
 '''
 @app.route('/square/', methods=['POST'])
@@ -64,29 +64,33 @@ def square():
 '''
 
 #@app.route('/loop',methods=['POST'])
-def loop():
-    sleep(10)
-    while True:
-        body = request.get_json()
 
-        image_bytes = base64.b64decode(body['image_base64'].split(',')[1])
-        image = io.BytesIO(image_bytes)
+while True:
+    #body = request.get_json()
+    retval, image = cap.read()
+    retval, buffer = cv2.imencode('.jpg', image)
+    #image_bytes = base64.b64encode(buffer)
 
-        faces = face_client.face.detect_with_stream(image,
-                                                    return_face_attributes=['emotion'])
+    #image_bytes = base64.b64decode(body['image_base64'].split(',')[1])
+    image = io.BytesIO(buffer)
+    
+    try:
+        faces = face_client.face.detect_with_stream(image, return_face_attributes=['emotion'])
+    except APIErrorException:
+        pass
+    print(angle)
 
-        angle = emoDi(angle, faces)
-        #angle += 1/50
-        dx,dy = (200*np.cos(angle),200*np.sin(angle))
-        win32api.SetCursorPos((int(x+dx),int(y+dy)))
-        sleep(0.005)
-        x,y = win32api.GetCursorPos()
-        x -= dx -(x+dx)%1
-        y -= dy -(y+dy)%1
-        if (win32api.GetAsyncKeyState(27)) != 0:
-            break
+    angle = emoDi(angle, faces)
+    #angle += 1/50
+    dx,dy = (200*np.cos(angle),200*np.sin(angle))
+    win32api.SetCursorPos((int(x+dx),int(y+dy)))
+    x,y = win32api.GetCursorPos()
+    x -= dx -(x+dx)%1
+    y -= dy -(y+dy)%1
+    if (win32api.GetAsyncKeyState(27)) != 0:
+        cap.release()
+        break
 
-loop()
 '''
 @app.route('/result', methods=['POST'])
 def check_results():
